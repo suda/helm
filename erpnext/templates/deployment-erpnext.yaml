@@ -135,6 +135,173 @@ spec:
             periodSeconds: 10
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+        - name: {{ .Chart.Name }}-worker
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.pythonImage.repository }}:{{ .Values.pythonImage.tag }}"
+          volumeMounts:
+          - name: sites-dir
+            mountPath: /home/frappe/frappe-bench/sites
+          - name: logs
+            mountPath: /home/frappe/frappe-bench/logs
+          imagePullPolicy: {{ .Values.pythonImage.pullPolicy }}
+          args: ["worker"]
+          env:
+            - name: "WORKER_TYPE"
+              value: "default"
+          livenessProbe:
+            exec:
+              command:
+              - "healthcheck.sh"
+              {{- if and .Values.postgresHost .Values.postgresPort }}
+              - "-p"
+              - "{{ .Values.postgresHost }}:{{ .Values.postgresPort }}"
+              {{- end }}
+            initialDelaySeconds: 15
+            periodSeconds: 5
+          readinessProbe:
+            exec:
+              command:
+              - "healthcheck.sh"
+              {{- if and .Values.postgresHost .Values.postgresPort }}
+              - "-p"
+              - "{{ .Values.postgresHost }}:{{ .Values.postgresPort }}"
+              {{- end }}
+            initialDelaySeconds: 15
+            periodSeconds: 5
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+        - name: {{ .Chart.Name }}-worker-long
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.pythonImage.repository }}:{{ .Values.pythonImage.tag }}"
+          volumeMounts:
+          - name: sites-dir
+            mountPath: /home/frappe/frappe-bench/sites
+          - name: logs
+            mountPath: /home/frappe/frappe-bench/logs
+          imagePullPolicy: {{ .Values.pythonImage.pullPolicy }}
+          args: ["worker"]
+          env:
+            - name: "WORKER_TYPE"
+              value: "long"
+          livenessProbe:
+            exec:
+              command:
+              - "healthcheck.sh"
+              {{- if and .Values.postgresHost .Values.postgresPort }}
+              - "-p"
+              - "{{ .Values.postgresHost }}:{{ .Values.postgresPort }}"
+              {{- end }}
+            initialDelaySeconds: 15
+            periodSeconds: 5
+          readinessProbe:
+            exec:
+              command:
+              - "healthcheck.sh"
+              {{- if and .Values.postgresHost .Values.postgresPort }}
+              - "-p"
+              - "{{ .Values.postgresHost }}:{{ .Values.postgresPort }}"
+              {{- end }}
+            initialDelaySeconds: 15
+            periodSeconds: 5
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+        - name: {{ .Chart.Name }}-worker-short
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.pythonImage.repository }}:{{ .Values.pythonImage.tag }}"
+          volumeMounts:
+          - name: sites-dir
+            mountPath: /home/frappe/frappe-bench/sites
+          - name: logs
+            mountPath: /home/frappe/frappe-bench/logs
+          imagePullPolicy: {{ .Values.pythonImage.pullPolicy }}
+          args: ["worker"]
+          env:
+            - name: "WORKER_TYPE"
+              value: "short"
+          livenessProbe:
+            exec:
+              command:
+              - "healthcheck.sh"
+              {{- if and .Values.postgresHost .Values.postgresPort }}
+              - "-p"
+              - "{{ .Values.postgresHost }}:{{ .Values.postgresPort }}"
+              {{- end }}
+            initialDelaySeconds: 15
+            periodSeconds: 5
+          readinessProbe:
+            exec:
+              command:
+              - "healthcheck.sh"
+              {{- if and .Values.postgresHost .Values.postgresPort }}
+              - "-p"
+              - "{{ .Values.postgresHost }}:{{ .Values.postgresPort }}"
+              {{- end }}
+            initialDelaySeconds: 15
+            periodSeconds: 5
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+        - name: {{ .Chart.Name }}-scheduler
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.pythonImage.repository }}:{{ .Values.pythonImage.tag }}"
+          volumeMounts:
+          - name: sites-dir
+            mountPath: /home/frappe/frappe-bench/sites
+          - name: logs
+            mountPath: /home/frappe/frappe-bench/logs
+          imagePullPolicy: {{ .Values.pythonImage.pullPolicy }}
+          args: ["schedule"]
+          livenessProbe:
+            exec:
+              command:
+              - "healthcheck.sh"
+              {{- if and .Values.postgresHost .Values.postgresPort }}
+              - "-p"
+              - "{{ .Values.postgresHost }}:{{ .Values.postgresPort }}"
+              {{- end }}
+            initialDelaySeconds: 15
+            periodSeconds: 5
+          readinessProbe:
+            exec:
+              command:
+              - "healthcheck.sh"
+              {{- if and .Values.postgresHost .Values.postgresPort }}
+              - "-p"
+              - "{{ .Values.postgresHost }}:{{ .Values.postgresPort }}"
+              {{- end }}
+            initialDelaySeconds: 15
+            periodSeconds: 5
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+        - name: {{ .Chart.Name }}-socketio
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.socketIOImage.repository }}:{{ .Values.socketIOImage.tag }}"
+          volumeMounts:
+          - name: sites-dir
+            mountPath: /home/frappe/frappe-bench/sites
+          - name: logs
+            mountPath: /home/frappe/frappe-bench/logs
+          imagePullPolicy: {{ .Values.socketIOImage.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 9000
+              protocol: TCP
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.socketIOPort }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.socketIOPort }}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
       volumes:
         - name: assets-cache
           emptyDir: {}

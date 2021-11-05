@@ -1,0 +1,17 @@
+{{- if and .Values.persistence.worker.enabled .Values.nfsServer }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  labels:
+    app: {{ template "erpnext.name" . }}
+    chart: {{ template "erpnext.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "erpnext.fullname" . }}-nfs
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.persistence.worker.size | quote }}
+{{- end }}

@@ -1,0 +1,18 @@
+{{- if and .Values.persistence.worker.enabled .Values.nfsServer }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ template "erpnext.fullname" . }}
+spec:
+  capacity:
+    storage: {{ .Values.persistence.worker.size | quote }}
+  accessModes:
+    - ReadWriteMany 
+  persistentVolumeReclaimPolicy: Retain 
+  nfs: 
+    path: /sites
+    server: {{ template "erpnext.fullname" . }}-nfs-server
+    readOnly: false
+  mountOptions:
+    - nfsvers=4.2
+{{- end }}

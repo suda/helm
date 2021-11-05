@@ -14,5 +14,9 @@ spec:
   resources:
     requests:
       storage: {{ .Values.persistence.logs.size | quote }}
+  {{- if .Values.nfsServer }}
+  storageClassName: ""
+  {{- else }}
   storageClassName: {{ required "A valid .Values.persistence.logs.storageClass entry required!" .Values.persistence.logs.storageClass }}
+  {{- end }}
 {{- end }}

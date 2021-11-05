@@ -154,3 +154,5 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+nfsServer: false

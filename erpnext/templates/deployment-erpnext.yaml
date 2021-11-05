@@ -123,6 +123,14 @@ spec:
               {{- end }}
             - name: "SOCKETIO_PORT"
               value: {{ .Values.socketIOPort | quote }}
+            {{- if .Values.postgresHost }}
+            - name: "POSTGRES_HOST"
+              value: {{ .Values.postgresHost | quote }}
+            {{- end }}
+            {{- if .Values.postgresPort }}
+            - name: "POSTGRES_PORT"
+              value: {{ .Values.postgresPort | quote }}
+            {{- end }}
           livenessProbe:
             tcpSocket:
               port: {{ .Values.frappePyPort }}

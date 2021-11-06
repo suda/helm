@@ -25,6 +25,9 @@ spec:
         volumeMounts:
           - mountPath: /exports
             name: nfs-pvc
+          - mountPath: /lib/modules
+            name: modules
+            readOnly: true
         env:
           - name: NFS_EXPORT_0
             value: "/exports *(rw,sync,nohide)"
@@ -32,8 +35,11 @@ spec:
           capabilities:
             add:
               - SYS_ADMIN
+              - SYS_MODULE
       volumes:
         - name: nfs-pvc
           persistentVolumeClaim:
             claimName: {{ template "erpnext.fullname" . }}-nfs
+        - name: modules
+          path: /lib/modules
 {{- end }}

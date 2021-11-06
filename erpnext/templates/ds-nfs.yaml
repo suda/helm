@@ -41,5 +41,6 @@ spec:
           persistentVolumeClaim:
             claimName: {{ template "erpnext.fullname" . }}-nfs
         - name: modules
-          path: /lib/modules
+          hostPath:
+            path: /lib/modules
 {{- end }}
